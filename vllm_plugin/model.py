@@ -72,7 +72,13 @@ def _ffmpeg_load_file(filepath) -> tuple[np.ndarray, int]:
     return audio, sr
 
 # Register FFmpeg-based audio loader
-import vllm.multimodal.audio as _vllm_audio_module
+try:
+    # Try the new location first (vLLM 0.15.0+)
+    import vllm.multimodal.media.audio as _vllm_audio_module
+except ImportError:
+    # Fallback to the old location (vLLM 0.14.x)
+    import vllm.multimodal.audio as _vllm_audio_module
+
 _OriginalAudioMediaIO = _vllm_audio_module.AudioMediaIO
 
 class _PatchedAudioMediaIO(_OriginalAudioMediaIO):
@@ -121,7 +127,12 @@ from vllm.multimodal.processing import (
     PromptUpdate,
     PromptUpdateDetails,
 )
-from vllm.multimodal.profiling import BaseDummyInputsBuilder, ProcessorInputs
+try:
+    # Try the new location first (vLLM 0.15.0+)
+    from vllm.multimodal.processing.dummy_inputs import BaseDummyInputsBuilder, ProcessorInputs
+except ImportError:
+    # Fallback to the old location (vLLM 0.14.x)
+    from vllm.multimodal.profiling import BaseDummyInputsBuilder, ProcessorInputs
 
 # Import VibeVoice components
 from vibevoice.modular.modular_vibevoice_tokenizer import (
